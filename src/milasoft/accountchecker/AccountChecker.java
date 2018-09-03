@@ -124,8 +124,8 @@ public class AccountChecker extends AbstractScript {
             			sleep(500);
             			getMouse().click(cancelButton);
                 		return false;
-					default:
-						break;
+            		default:
+            			break;
             	}
             	switch(getClient().getLoginIndex()) {
             		case 3:
