@@ -71,10 +71,10 @@ public class AccountChecker extends AbstractScript {
 
 	void loadAccounts() {
 		try {
-            Files.lines(Paths.get(ACCOUNT_FILE)).forEach(line -> {
-            	String[] accountData = line.split(" ");
-            	accountQueue.add(new Account(accountData[0], accountData[1]));
-            });
+			Files.lines(Paths.get(ACCOUNT_FILE)).forEach(line -> {
+				String[] accountData = line.split(" ");
+				accountQueue.add(new Account(accountData[0], accountData[1]));
+			});
 		} catch (FileNotFoundException e) {
 			log("Can't find " + ACCOUNT_FILE);
 			stop();
@@ -84,15 +84,13 @@ public class AccountChecker extends AbstractScript {
 		}
 	}
 	
-	boolean writeFile(String filename) {
+	void writeFile(String filename) {
 		String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd hh:mm a"));
 		List<String> line = Arrays.asList(currentTime + ": " + account.getUsername() + " Status: " + account.getStatus().toString());
 		try {
 			Files.write(Paths.get(filename), line, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}	
 	}
 	
