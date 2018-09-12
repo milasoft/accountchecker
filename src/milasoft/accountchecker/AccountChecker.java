@@ -45,7 +45,7 @@ public class AccountChecker extends AbstractScript {
 	public int onLoop() {
 		if(getClient().isLoggedIn()) {
 			if(!fileContainsUsername(COMPLETED_FILE)) {
-				if(getPlayerSettings().getConfig(281) > 1000) {
+				if(getPlayerSettings().getConfig(281) >= 1000) {
 					account.setStatus(AccountStatus.COMPLETED_TUTORIAL);
 				} else {
 					account.setStatus(AccountStatus.STARTED_TUTORIAL);			
