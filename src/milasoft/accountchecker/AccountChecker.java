@@ -72,14 +72,15 @@ public class AccountChecker extends AbstractScript {
 	void loadAccounts() {
 		try {
 			Files.lines(Paths.get(ACCOUNT_FILE)).forEach(line -> {
-				String[] accountData = line.split(" ");
+				String[] accountData = line.split(":");
 				accountQueue.add(new Account(accountData[0], accountData[1]));
 			});
 		} catch (FileNotFoundException e) {
 			log("Can't find " + ACCOUNT_FILE);
 			stop();
 		} catch (IOException e) {
-			log("Error reading data from file.");
+			log("Error reading data from file. Disable fresh start and retry.");
+			e.printStackTrace();
 			stop();
 		}
 	}
