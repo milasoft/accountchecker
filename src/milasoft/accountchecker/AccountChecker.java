@@ -2,6 +2,7 @@ package milasoft.accountchecker;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,10 +22,10 @@ import org.dreambot.api.script.ScriptManifest;
 @ScriptManifest(author = "Milasoft", category = Category.UTILITY, name = "Milasoft Account Checker", version = 1.0)
 public class AccountChecker extends AbstractScript {
 
-	final String SCRIPT_DIR = System.getProperty("user.home") + "/DreamBot/Scripts/MilaAccountChecker/";
-	final String ACCOUNT_FILE = SCRIPT_DIR + "accounts.txt";
-	final String COMPLETED_FILE = SCRIPT_DIR + "completed.txt";
-	final String FAILED_FILE = SCRIPT_DIR + "failed.txt";
+	String filePath = "";
+	final String ACCOUNT_FILE = "accounts.txt";
+	final String COMPLETED_FILE = "completed.txt";
+	final String FAILED_FILE = "failed.txt";
 	
 	Point usernameField = new Point(316, 247);
 	Rectangle existingUser = new Rectangle(394, 274, 136, 32);
@@ -37,6 +38,7 @@ public class AccountChecker extends AbstractScript {
 		
 	@Override
 	public void onStart() {
+		createFilePath();
 		accountQueue = new LinkedList<Account>();
 		loadAccounts();
 	}
@@ -44,13 +46,13 @@ public class AccountChecker extends AbstractScript {
 	@Override
 	public int onLoop() {
 		if(getClient().isLoggedIn()) {
-			if(!fileContainsUsername(COMPLETED_FILE)) {
+			if(!fileContainsUsername(filePath + COMPLETED_FILE)) {
 				if(getPlayerSettings().getConfig(281) >= 1000) {
 					account.setStatus(AccountStatus.COMPLETED_TUTORIAL);
 				} else {
 					account.setStatus(AccountStatus.STARTED_TUTORIAL);			
 				}
-				writeFile(COMPLETED_FILE);
+				writeFile(filePath + COMPLETED_FILE);
 			} else {
 				getTabs().logout();
 				sleepUntil(() -> !getClient().isLoggedIn(), 6000);
@@ -59,7 +61,7 @@ public class AccountChecker extends AbstractScript {
 			if(accountQueue.peek() != null) {
 				account = accountQueue.poll();
 				if(!login()) {
-					writeFile(FAILED_FILE);
+					writeFile(filePath + FAILED_FILE);
 				}
 			} else {
 				log("Out of accounts, shutting down.");
@@ -71,7 +73,7 @@ public class AccountChecker extends AbstractScript {
 
 	void loadAccounts() {
 		try {
-			Files.lines(Paths.get(ACCOUNT_FILE)).forEach(line -> {
+			Files.lines(Paths.get(filePath + ACCOUNT_FILE)).forEach(line -> {
 				String[] accountData = line.split(":");
 				accountQueue.add(new Account(accountData[0], accountData[1]));
 			});
@@ -83,6 +85,21 @@ public class AccountChecker extends AbstractScript {
 			e.printStackTrace();
 			stop();
 		}
+	}
+	
+	void createFilePath() {
+		String os = System.getProperty("os.name");
+		if(os.contains("Windows")) {
+			filePath = "C:/Users/" + System.getProperty("user.name") + "/milasoft/AccountChecker/";
+		} else if(os.contains("Linux")) {
+			filePath = "/home/" + System.getProperty("user.name") + "/milasoft/AccountChecker/";
+		} else if(os.contains("Mac")) {
+			filePath = "/Users/" + System.getProperty("user.name") + "/milasoft/AccountChecker/";
+		} else {
+			filePath = System.getProperty("user.home") + "/milasoft/AccountChecker/";
+		}
+		File fileDir = new File(filePath);
+		fileDir.mkdirs();
 	}
 	
 	void writeFile(String filename) {

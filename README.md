@@ -1,4 +1,8 @@
 # accountchecker
-Loads accounts from UserDirectory/DreamBot/Scripts/MilaAccountChecker/accounts.txt in username:password format.
 
-Note: It won't work if you are using fresh start in the client since it changes the home directory. You would have to manually set the path in the script if you are using it or disable fresh start.
+File Paths
+Windows: "C:\Users\you\milasoft\AccountChecker\accounts.txt"
+Linux:   "/home/you/milasoft/AccountChecker/accounts.txt"
+Mac:	 "/Users/you/milasoft/AccountChecker/accounts.txt"
+
+Loads accounts from the account file in username:password format.
