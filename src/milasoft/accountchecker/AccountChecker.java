@@ -33,6 +33,9 @@ public class AccountChecker extends AbstractScript {
 	Rectangle cancelButton = new Rectangle(394, 305, 136, 32);
 	Rectangle tryAgain = new Rectangle(316, 260, 136, 32);
 	
+	Rectangle logoutX = new Rectangle(737, 4, 25, 18);
+	Rectangle logoutButton = new Rectangle(595, 376, 136, 28);
+	
 	Account account;
 	Queue<Account> accountQueue;
 		
@@ -54,7 +57,13 @@ public class AccountChecker extends AbstractScript {
 				}
 				writeFile(filePath + COMPLETED_FILE);
 			} else {
-				getTabs().logout();
+				if(getClientSettings().isResizableActive()) {
+					getMouse().click(logoutX);
+					sleep(2000, 3000);
+					getMouse().click(logoutButton);
+				} else {
+					getTabs().logout();
+				}
 				sleepUntil(() -> !getClient().isLoggedIn(), 6000);
 			}
 		} else {
